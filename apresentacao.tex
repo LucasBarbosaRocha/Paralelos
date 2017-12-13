@@ -1,0 +1,1124 @@
+%!TEX program = xelatex
+\documentclass[10pt, compress]{beamer}
+\usetheme[titleprogressbar]{m}
+
+\usepackage[portuguese]{babel}  
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+\usepackage{minted}
+
+\newcommand{\aaa}{A}
+\newcommand{\gga}{G}
+\newcommand{\ccc}{C}
+\newcommand{\ttt}{T}
+%\newcommand{\ttt}{\mathtt{T}}
+
+\usepgfplotslibrary{dateplot}
+\usemintedstyle{trac}
+
+\title{O Problema da Seleção de Primers Específicos usando Distância de Hamming}
+\subtitle{}
+\author{Aluno: Lucas B. Rocha \newline Orientadores: Francisco Elói e Said Sadique}
+
+\institute{Universidade Federal de Mato Grosso do Sul}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}[fragile]
+	\frametitle{Introdução}
+    
+    \alert{Motivações}
+    
+    \begin{itemize}
+    	\item Problemas com sequências; \pause
+        \item Detecção de doenças; \pause
+        \item Identificar regiões específicas de DNA para amplificar; \pause
+        \item Técnica PCR.
+    \end{itemize}
+    
+%\begin{figure}
+%  \centering
+% \includegraphics[width=6cm,height=6cm]{firstex.png}
+%\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Problema}
+  	\begin{itemize}
+  		\item \textbf{Biólogo}: Detectar doenças ou agentes causadores de doenças;
+        \item \textbf{Como}: Identificando regiões específicas de DNA;
+        \item \textbf{Solução}: Dadas duas sequências, analisar todos os seguimentos possíveis na busca de um que não aparece na outra.
+        \item \textbf{Dificuldade}: As sequências são grandes, e a identificação dessas regiões consomem muito tempo;
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Conceitos}
+    \begin{itemize}
+        \item \textbf{Primer}:  Oligonucleotídeos sintéticos curtos, ou seja, é um fragmento curto de uma cadeia simples de ácido nucleico (DNA ou RNA), tipicamente com 20 ou menos bases.
+        
+        \vspace{0.5cm} \pause
+        
+        \item Exemplo de característica do primer ideal:
+        	\begin{itemize}
+        		\item Pode ser selecionado de qualquer ponto da sequência molde;
+				\item Ser o menor segmento possível, dado que o custo da sintetização do primer é
+diretamente proporcional ao tamanho do segmento; assim, quanto maior, mais
+caro.
+			\end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Conceitos}
+    \begin{itemize}
+    	\item \textbf{Sequência}: $\sum = \{A, C, G, T\}$, $s = TTAGCGAC$,  $|s| = 8$, e $s_2 = T$
+		\item $\sum = $ \textbf{DNA}: (\textbf{A}) adenina, (\textbf{C}) citosina, (\textbf{G}) guanina e (\textbf{T}) timina.
+        
+        \vspace{0.5cm} \pause
+        
+        \item $s_h$ := $h$-ésimo elemento de $s$, 
+        
+        \item \textbf{Subcadeia}: $s_{i \ldots j} = s_i \ s_{i+1} \ \ldots \ s_j$.
+	    % $j$ é p $j$-ésimo último elemento. Para $i < j$ a cadeia é vazia $(\epsilon)$.
+		\item \textbf{Exemplo}: $s_{2 \ldots 5} = TAGC$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Conceitos}
+	Distância de Edição:
+    \begin{itemize}
+    	\item \textbf{Entrada}: Duas sequências $\alpha$ e $\beta$;
+        \item \textbf{Objetivo}: O número mínimo de operações para transformar $\alpha$ em $\beta$ ou vice-versa.
+        \item \textbf{Operações}: \textbf{I}nserção, \textbf{R}emoção e \textbf{S}ubstituição.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Conceitos}
+	Distância de Edição - Exemplo:
+    \begin{itemize}
+    	\item $\alpha = TACATG$ e $\beta = ACAACT$
+        \begin{itemize}
+        	\item \textbf{R.} $\alpha_1 = \alert{T}ACATG = ACATG$
+            \item \textbf{S.} $\alpha_5 \ por \ A = ACA\alert{T}G = ACAAG$
+            \item \textbf{S.} $\alpha_6 \ por \ C = ACAA\alert{G} = ACAAC$
+            \item \textbf{I.} $T \ no \ final = ACAACT$
+        \end{itemize}
+        \item $D(\alpha,\beta) = 4$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Conceitos}
+	Distância de Hamming:
+    \begin{itemize}
+    	\item \textbf{Entrada}: Duas sequências $\alpha$ e $\beta$;
+        \item \textbf{Objetivo}: $dist(\alpha,\beta) = \sum_{1 \le i \le n} dif(i)$,
+        					$$
+							dif(i,j) = \begin{cases}
+											0 & \mbox{se $\alpha_i = \beta_j$,} \\
+                    						1 & \mbox{caso contrário}.
+										\end{cases}
+							$$
+    \end{itemize}
+    Exemplo:
+    \begin{itemize}
+    	\item $\alpha = TACATG$ e $\beta = ACAACT$
+    \end{itemize}
+    \begin{tikzpicture}
+    	\path 
+    	node at (0,0)    {$\ttt$}
+    	node at (0.3,0)  {$\aaa$}
+    	node at (0.6,0)  {$\ccc$}
+    	node at (0.9,0)  {$\aaa$}
+    	node at (1.2,0)  {$\ttt$}
+    	node at (1.5,0)  {$\gga$};
+        \path        
+    	node at (0,-0.5)   {$\aaa$}
+    	node at (0.3,-0.5) {$\ccc$}
+    	node at (0.6,-0.5) {$\aaa$}
+    	node at (0.9,-0.5)  {$\aaa$}
+    	node at (1.2,-0.5) {$\ccc$}
+    	node at (1.5,-0.5) {$\ttt$};
+        \pause
+    	\path 
+    	node at (0,0)    {$\alert{\ttt}$};
+        \path        
+    	node at (0,-0.5)   {$\alert{\aaa}$}; 
+        \pause
+    	\path 
+    	node at (0.3,0)  {$\alert{\aaa}$};
+        \path        
+    	node at (0.3,-0.5) {$\alert{\ccc}$};
+        \pause
+    	\path 
+    	node at (0.6,0)  {$\alert{\ccc}$};
+        \path        
+    	node at (0.6,-0.5) {$\alert{\aaa}$};
+        \pause
+    	\path 
+    	node at (0.9,0)  {$\textcolor{blue}{\aaa}$};
+        \path        
+    	node at (0.9,-0.5) {$\textcolor{blue}{\aaa}$};
+        \pause
+    	\path 
+    	node at (1.2,0)  {$\alert{\ttt}$};
+        \path       
+    	node at (1.2,-0.5) {$\alert{\ccc}$};
+        \pause
+    	\path 
+    	node at (1.5,0)  {$\alert{\gga}$};
+        \path        
+    	node at (1.5,-0.5) {$\alert{\ttt}$}
+        node at (0,-1) {$Dist(\alpha,\beta) = 5$};
+     
+    \end{tikzpicture}    
+	
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{Solução Computacional}
+	\textbf{Problema do \textit{Primer} com $k$ Diferenças}: 
+    \begin{itemize}
+    	\item \textbf{Entrada}: Duas sequências $\alpha$ e $\beta$ e um inteiro $k > 0$;
+        \item \textbf{Objetivo}: Encontrar para cada índice $j$ de $\alpha$, o menor segmento $\gamma$ de $\alpha$ que se inicia em $j$ com distância de pelo menos $k$ com relação a qualquer segmento de $\beta$.
+    \end{itemize}
+\end{frame}
+
+%% Começando aqui os exemplos
+\begin{frame}[fragile]
+	\frametitle{Exemplos}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \begin{center}
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (0,-0.5) 		{$\aaa$}
+            node at (0.3,-0.5) 		{$\aaa$}
+            node at (0.6,-0.5) 		{$\aaa$}
+            node at (0.9,-0.5) 		{$\gga$}
+            node at (1.2,-0.5) 		{$\gga$}
+            node at (1.5,-0.5) 		{$\aaa$};
+ 
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+
+%% Fim aqui exemplos primer
+
+%% Exemplos Método 1
+
+
+
+\begin{frame}[fragile]
+	\frametitle{Exemplos}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \begin{center}
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (0,-0.5) 		{$\aaa$}
+            node at (0.3,-0.5) 		{$\aaa$}
+            node at (0.6,-0.5) 		{$\aaa$}
+            node at (0.9,-0.5) 		{$\gga$}
+            node at (1.2,-0.5) 		{$\gga$}
+            node at (1.5,-0.5) 		{$\aaa$};
+            \pause
+        	\path 
+            node at (0,0)    		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$};    
+            \pause
+        	\path 
+            node at (0.3,0)  		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0.3,-0.5) 		{$\textcolor{blue}{\aaa}$};
+            \pause
+        	\path 
+            node at (0.6,0)  		{$\alert{\gga}$};
+            \path       
+            node at (0.6,-0.5) 		{$\alert{\aaa}$};
+            \pause
+        	\path 
+            node at (0.9,0)  		{$\textcolor{blue}{\gga}$};
+            \path       
+            node at (0.9,-0.5) 		{$\textcolor{blue}{\gga}$};
+            \pause
+        	\path 
+            node at (1.2,0)  		{$\alert{\aaa}$};
+            \path       
+            node at (1.2,-0.5) 		{$\alert{\gga}$};
+            \path
+            node at (0,-1) 		{$5$};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Exemplos}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \begin{center}
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (-0.3,-0.5) 	{$\aaa$}
+            node at (0,-0.5) 		{$\aaa$}
+            node at (0.3,-0.5) 		{$\aaa$}
+            node at (0.6,-0.5) 		{$\gga$}
+            node at (0.9,-0.5) 		{$\gga$}
+            node at (1.2,-0.5) 		{$\aaa$};
+            \pause
+        	\path 
+            node at (0,0)    		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$};    
+            \pause
+        	\path 
+            node at (0.3,0)  		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0.3,-0.5) 		{$\textcolor{blue}{\aaa}$};
+            \pause
+        	\path 
+            node at (0.6,0)  		{$\textcolor{blue}{\gga}$};
+            \path       
+            node at (0.6,-0.5) 		{$\textcolor{blue}{\gga}$};
+            \pause
+        	\path 
+            node at (0.9,0)  		{$\textcolor{blue}{\gga}$};
+            \path       
+            node at (0.9,-0.5) 		{$\textcolor{blue}{\gga}$};
+            \pause
+        	\path 
+            node at (1.2,0)  		{$\textcolor{blue}{\aaa}$};
+            \path       
+            node at (1.2,-0.5) 		{$\textcolor{blue}{\aaa}$};
+            \path
+            node at (0,-1) 		{$6$};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Exemplos}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \begin{center}
+     	\begin{tikzpicture}
+        	\path 
+            node at (-0.3,0)    	{$\aaa$}
+            node at (0,0)  			{$\aaa$}
+            node at (0.3,0)  		{$\gga$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)    		{$\aaa$}
+            node at (1.2,0)  		{$\aaa$};
+            \path        
+            node at (0,-0.5) 		{$\aaa$}
+            node at (0.3,-0.5) 		{$\aaa$}
+            node at (0.6,-0.5) 		{$\aaa$}
+            node at (0.9,-0.5) 		{$\gga$}
+            node at (1.2,-0.5) 		{$\gga$}
+            node at (1.5,-0.5) 		{$\aaa$};
+            \path
+            node at (-0.3,-1) 		{$6$};
+            \pause
+        	\path 
+            node at (0,0)  			{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$};   
+            \pause
+        	\path 
+            node at (0.3,0)  			{$\alert{\gga}$};
+            \path        
+            node at (0.3,-0.5) 		{$\alert{\aaa}$};   
+            \pause
+        	\path 
+            node at (0.6,0)  			{$\alert{\gga}$};
+            \path        
+            node at (0.6,-0.5) 		{$\alert{\aaa}$}; 
+            \path
+            node at (0, -1) {$3$};           
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Exemplos}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \begin{center}
+     	\begin{tikzpicture}
+        	\path 
+            node at (-0.3,0)    	{$\aaa$}
+            node at (0,0)  			{$\aaa$}
+            node at (0.3,0)  		{$\gga$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)    		{$\aaa$}
+            node at (1.2,0)  		{$\aaa$};
+            \path        
+            node at (-0.3,-0.5) 	{$\aaa$}
+            node at (0,-0.5) 		{$\aaa$}
+            node at (0.3,-0.5) 		{$\aaa$}
+            node at (0.6,-0.5) 		{$\gga$}
+            node at (0.9,-0.5) 		{$\gga$}
+            node at (1.2,-0.5) 		{$\aaa$};
+            \path
+            node at (-0.3,-1) 		{$6$};
+            \pause
+        	\path 
+            node at (0,0)  			{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$};   
+            \pause
+        	\path 
+            node at (0.3,0)  		{$\alert{\gga}$};
+            \path        
+            node at (0.3,-0.5) 		{$\alert{\aaa}$};   
+            \pause
+        	\path 
+            node at (0.6,0)  		{$\textcolor{blue}{\gga}$};
+            \path        
+            node at (0.6,-0.5) 		{$\textcolor{blue}{\gga}$};  
+            \pause
+        	\path 
+            node at (0.9,0)  		{$\alert{\aaa}$};
+            \path        
+            node at (0.9,-0.5) 		{$\alert{\gga}$}; 
+            \path
+            node at (0,-1) 		{$4$}; 
+
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Exemplos}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \begin{center}
+     	\begin{tikzpicture}
+        	\path 
+            node at (-0.3,0)    	{$\aaa$}
+            node at (0,0)  			{$\aaa$}
+            node at (0.3,0)  		{$\gga$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)    		{$\aaa$}
+            node at (1.2,0)  		{$\aaa$};
+            \path        
+            node at (-0.6,-0.5) 	{$\aaa$}
+            node at (-0.3,-0.5) 	{$\aaa$}
+            node at (0,-0.5) 		{$\aaa$}
+            node at (0.3,-0.5) 		{$\gga$}
+            node at (0.6,-0.5) 		{$\gga$}
+            node at (0.9,-0.5) 		{$\aaa$};
+            \path
+            node at (-0.3,-1) 		{$6$};
+            \pause
+        	\path 
+            node at (0,0)  			{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$};   
+            \pause
+        	\path 
+            node at (0.3,0)  		{$\textcolor{blue}{\gga}$};
+            \path        
+            node at (0.3,-0.5) 		{$\textcolor{blue}{\gga}$};   
+            \pause
+        	\path 
+            node at (0.6,0)  		{$\textcolor{blue}{\gga}$};
+            \path        
+            node at (0.6,-0.5) 		{$\textcolor{blue}{\gga}$}; 
+            \pause
+        	\path 
+            node at (0.9,0)  		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0.9,-0.5) 		{$\textcolor{blue}{\aaa}$}; 
+            \path
+            node at (0, -1) {$5$};
+   		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Exemplos}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \begin{center}
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (0,-0.5) 		{$\aaa$}
+            node at (0.3,-0.5) 		{$\aaa$}
+            node at (0.6,-0.5) 		{$\aaa$}
+            node at (0.9,-0.5) 		{$\gga$}
+            node at (1.2,-0.5) 		{$\gga$}
+            node at (1.5,-0.5) 		{$\aaa$};
+            \path        
+            node at (0,-1) 			{$6$}
+            node at (0.3,-1) 		{$5$}
+            node at (0.6,-1) 		{$4$}
+            node at (0.9,-1) 		{$4$}
+            node at (1.2,-1) 		{$3$}
+            node at (1.5,-1) 		{$2$};
+   		\end{tikzpicture}
+	\end{center}
+\end{frame}
+%% terminando aqui os exemplos
+
+
+\begin{frame}[fragile]
+	\frametitle{Método 1}
+    \begin{itemize}
+    	\item Funciona exatamente como o exemplo anterior;
+        \item $O(n^2)$ pares;
+        \item $O(n)$ para percorrer toda cadeia;
+        \item $O(n^3)$ para computação.
+    \end{itemize}    
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+	\begin{itemize}
+		\item Podemos melhorar?
+    	\item Podemos aproveitar informações?
+        \pause
+        \item SIM.
+        \item Como?
+	\end{itemize}
+\end{frame}
+
+%%% começando aqui
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (-1.5,-0.5) 	{$\aaa$}
+            node at (-1.2,-0.5) 	{$\aaa$}
+            node at (-0.9,-0.5) 	{$\aaa$}
+            node at (-0.6,-0.5) 	{$\gga$}
+            node at (-0.3,-0.5) 	{$\aaa$}
+            node at (0,-0.5) 		{$\aaa$};
+            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\textcolor{blue}{\aaa}$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (-1.5,-0.5) 	{$\aaa$}
+            node at (-1.2,-0.5) 	{$\aaa$}
+            node at (-0.9,-0.5) 	{$\aaa$}
+            node at (-0.6,-0.5) 	{$\gga$}
+            node at (-0.3,-0.5) 	{$\gga$}
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$};
+            \path
+			node at (0, -1) {2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\alert{\aaa}$}
+            node at (0.3,0)  		{$\textcolor{blue}{\aaa}$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (-1.2,-0.5) 	{$\aaa$}
+            node at (-0.9,-0.5) 	{$\aaa$}
+            node at (-0.6,-0.5) 	{$\aaa$}
+            node at (-0.3,-0.5) 	{$\gga$}
+            node at (0,-0.5) 		{$\alert{\gga}$}
+            node at (0.3,-0.5) 		{$\textcolor{blue}{\aaa}$};
+            \path
+            node at (0, -1) 	{3}
+			node at (0.3, -1) 	{2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\alert{\aaa}$}
+            node at (0.3,0)  		{$\alert{\aaa}$}
+            node at (0.6,0)  		{$\alert{\gga}$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (-0.9,-0.5) 	{$\aaa$}
+            node at (-0.6,-0.5) 	{$\aaa$}
+            node at (-0.3,-0.5) 	{$\aaa$}
+            node at (0,-0.5) 		{$\alert{\gga}$}
+            node at (0.3,-0.5) 		{$\alert{\gga}$}
+            node at (0.6,-0.5) 		{$\alert{\aaa}$};
+            \path
+            node at (0, -1) 	{3}
+			node at (0.3, -1) 	{2}
+			node at (0.6, -1) 	{2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\textcolor{blue}{\aaa}$}
+            node at (0.3,0)  		{$\alert{\aaa}$}
+            node at (0.6,0)  		{$\textcolor{blue}{\gga}$}
+            node at (0.9,0)  		{$\alert{\gga}$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (-0.6,-0.5) 	{$\aaa$}
+            node at (-0.3,-0.5) 	{$\aaa$}
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (0.3,-0.5) 		{$\alert{\gga}$}
+            node at (0.6,-0.5) 		{$\textcolor{blue}{\gga}$}
+            node at (0.9,-0.5) 		{$\alert{\aaa}$};
+            \path
+            node at (0, -1) 	{4}
+            node at (0.3, -1) 	{3}
+			node at (0.6, -1) 	{3}
+			node at (0.9, -1) 	{2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\textcolor{blue}{\aaa}$}
+            node at (0.3,0)  		{$\textcolor{blue}{\aaa}$}
+            node at (0.6,0)  		{$\textcolor{blue}{\gga}$}
+            node at (0.9,0)  		{$\textcolor{blue}{\gga}$}
+            node at (1.2,0)    		{$\textcolor{blue}{\aaa}$}
+            node at (1.5,0)  		{$\aaa$};
+            \path        
+            node at (-0.3,-0.5) 	{$\aaa$}
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (0.3,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (0.6,-0.5) 		{$\textcolor{blue}{\gga}$}
+            node at (0.9,-0.5) 		{$\textcolor{blue}{\gga}$}
+            node at (1.2,-0.5) 		{$\textcolor{blue}{\aaa}$};
+            \path
+            node at (0, -1) 	{6}
+			node at (0.3, -1) 	{5}
+            node at (0.6, -1) 	{4}
+			node at (0.9, -1) 	{3}
+			node at (1.2, -1) 	{2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\textcolor{blue}{\aaa}$}
+            node at (0.3,0)  		{$\textcolor{blue}{\aaa}$}
+            node at (0.6,0)  		{$\alert{\gga}$}
+            node at (0.9,0)  		{$\textcolor{blue}{\gga}$}
+            node at (1.2,0)    		{$\alert{\aaa}$}
+            node at (1.5,0)  		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (0.3,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (0.6,-0.5) 		{$\alert{\aaa}$}
+            node at (0.9,-0.5) 		{$\textcolor{blue}{\gga}$}
+            node at (1.2,-0.5) 		{$\alert{\gga}$}
+            node at (1.5,-0.5) 		{$\textcolor{blue}{\aaa}$};
+            \path
+            node at (0, -1) 	{6}
+			node at (0.3, -1) 	{5}
+            node at (0.6, -1) 	{4}
+			node at (0.9, -1) 	{4}
+			node at (1.2, -1) 	{3}
+            node at (1.5, -1)   {2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\textcolor{blue}{\aaa}$}
+            node at (0.6,0)  		{$\alert{\gga}$}
+            node at (0.9,0)  		{$\alert{\gga}$}
+            node at (1.2,0)    		{$\alert{\aaa}$}
+            node at (1.5,0)  		{$\alert{\aaa}$};
+            \path        
+            node at (0.3,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (0.6,-0.5) 		{$\alert{\aaa}$}
+            node at (0.9,-0.5) 		{$\alert{\aaa}$}
+            node at (1.2,-0.5) 		{$\alert{\gga}$}
+            node at (1.5,-0.5) 		{$\alert{\gga}$}
+            node at (1.8,-0.5) 		{$\aaa$};
+            \path
+            node at (0, -1) 	{6}
+			node at (0.3, -1) 	{5}
+            node at (0.6, -1) 	{4}
+			node at (0.9, -1) 	{4}
+			node at (1.2, -1) 	{3}
+            node at (1.5, -1)   {2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\alert{\gga}$}
+            node at (0.9,0)  		{$\alert{\gga}$}
+            node at (1.2,0)    		{$\alert{\aaa}$}
+            node at (1.5,0)  		{$\alert{\aaa}$};
+            \path        
+            node at (0.6,-0.5) 		{$\alert{\aaa}$}
+            node at (0.9,-0.5) 		{$\alert{\aaa}$}
+            node at (1.2,-0.5) 		{$\alert{\aaa}$}
+            node at (1.5,-0.5) 		{$\alert{\gga}$}
+            node at (1.8,-0.5) 		{$\gga$}
+            node at (2.1,-0.5) 		{$\aaa$};
+            \path
+            node at (0, -1) 	{6}
+			node at (0.3, -1) 	{5}
+            node at (0.6, -1) 	{4}
+			node at (0.9, -1) 	{4}
+			node at (1.2, -1) 	{3}
+            node at (1.5, -1)   {2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\alert{\gga}$}
+            node at (1.2,0)    		{$\textcolor{blue}{\aaa}$}
+            node at (1.5,0)  		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (0.9,-0.5) 		{$\alert{\aaa}$}
+            node at (1.2,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (1.5,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (1.8,-0.5) 		{$\gga$}
+            node at (2.1,-0.5) 		{$\gga$}
+            node at (2.4,-0.5) 		{$\aaa$};
+            \path
+            node at (0, -1) 	{6}
+			node at (0.3, -1) 	{5}
+            node at (0.6, -1) 	{4}
+			node at (0.9, -1) 	{4}
+			node at (1.2, -1) 	{3}
+            node at (1.5, -1)   {2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\textcolor{blue}{\aaa}$}
+            node at (1.5,0)  		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (1.2,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (1.5,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (1.8,-0.5) 		{$\aaa$}
+            node at (2.1,-0.5) 		{$\gga$}
+            node at (2.4,-0.5) 		{$\gga$}
+            node at (2.7,-0.5) 		{$\aaa$};
+            \path
+            node at (0, -1) 	{6}
+			node at (0.3, -1) 	{5}
+            node at (0.6, -1) 	{4}
+			node at (0.9, -1) 	{4}
+			node at (1.2, -1) 	{3}
+            node at (1.5, -1)   {2};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    
+    \begin{center}
+    	Alinhamento: \\
+        
+	    $(pos_v,pos_u) \in \{(0,l)|l=0 \ldots |u|\} \cup \{(l,0)|l=0 \ldots |v|\} $   
+        \begin{itemize}
+        	\centering
+            \item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+        \end{itemize}        
+        
+     	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    		{$\aaa$}
+            node at (0.3,0)  		{$\aaa$}
+            node at (0.6,0)  		{$\gga$}
+            node at (0.9,0)  		{$\gga$}
+            node at (1.2,0)    		{$\aaa$}
+            node at (1.5,0)  		{$\textcolor{blue}{\aaa}$};
+            \path        
+            node at (1.5,-0.5) 		{$\textcolor{blue}{\aaa}$}
+            node at (1.8,-0.5) 		{$\aaa$}
+            node at (2.1,-0.5) 		{$\aaa$}
+            node at (2.4,-0.5) 		{$\gga$}
+            node at (2.7,-0.5) 		{$\gga$}
+            node at (3.0,-0.5) 		{$\aaa$};
+            \path
+            node at (0, -1) 	{6}
+			node at (0.3, -1) 	{5}
+            node at (0.6, -1) 	{4}
+			node at (0.9, -1) 	{\textcolor{red}{4}}
+			node at (1.2, -1) 	{\textcolor{red}{3}}
+            node at (1.5, -1)   {\textcolor{red}{2}};            
+		\end{tikzpicture}
+    \end{center}
+\end{frame}
+
+%%% terminando aqui
+
+
+
+\begin{frame}[fragile]
+	\frametitle{Método 2}
+    \begin{itemize}
+    	\item Funciona exatamente como o exemplo anterior;
+        \item $O(2n)$ pares;
+        \item $O(n)$ para percorrer toda cadeia;
+        \item $O(n^2)$ para computação.
+    \end{itemize}    
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Resultados}
+	\begin{figure}[!hbt]
+		\centering
+		\includegraphics[scale=.75]{k30.eps}
+		\caption{\textit{Gráfico de tempo de execução das sequências diferentes, geradas aleatoriamente, }$k = 30.$}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Resultados}
+	\begin{figure}[!hbt]
+		\centering
+		\includegraphics[scale=.75]{k300.eps}
+		\caption{\textit{Gráfico de tempo de execução das sequências diferentes, geradas aleatoriamente, }$k = 300.$}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Resultados}
+	\begin{figure}[!hbt]
+		\centering
+		\includegraphics[scale=.75]{k600.eps}
+		\caption{\textit{Gráfico de tempo de execução das sequências diferentes, geradas aleatoriamente, }$k = 600.$}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Resultados}
+	\begin{figure}[!hbt]
+		\centering
+		\includegraphics[scale=.75]{graficoIguais.eps}
+		\caption{Gráfico de tempo de execução das sequências iguais.}
+	\end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Resultados}
+    \begin{figure}[!hbt]
+    \centering
+        \includegraphics[scale=.75]{hsarhgdig.eps}
+        \caption{Gráfico de tempo de execução da sequência hsarhgdig (tam. 4398), $k = 30, 300$, e $600$}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Resultados}
+    \begin{figure}[!hbt]
+    \centering
+        \includegraphics[scale=.75]{hsankr10.eps}
+        \caption{Gráfico de tempo de execução da sequência hsankr10 (tam. 38530), $k = 30, 300$, e $600$}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Resultados}
+    \begin{figure}[!hbt]
+    \centering
+        \includegraphics[scale=.75]{hsaff4.eps}
+    \caption{Gráfico de tempo de execução da sequência hsaff4 (tam. 90284), $k = 30, 300$, e $600$}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Podemos comparar esse trabalho com o do Jean?}
+    
+    \begin{itemize}
+    	\item "NÃO".
+        \centering
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Motivo}
+	\begin{itemize}
+		\item \textbf{Entrada}: $\alpha = AAGGAA$, $\beta = AAAGGA$ e $k = 2$
+	\end{itemize}
+    
+    \textbf{Hamming}:
+    \begin{center}
+    	\begin{tikzpicture}
+        	\path 
+            node at (0,0)    	{$\aaa$}
+            node at (0.3,0)  	{$\aaa$}
+            node at (0.6,0)  	{$\gga$}
+            node at (0.9,0)  	{$\gga$}
+            node at (1.2,0)  	{$\aaa$}
+            node at (1.5,0)  	{$\aaa$};
+            \path        
+            node at (0,-0.5) 	{$\aaa$}
+            node at (0.3,-0.5) 	{$\aaa$}
+            node at (0.6,-0.5) 	{$\aaa$}
+            node at (0.9,-0.5) 	{$\gga$}
+            node at (1.2,-0.5) 	{$\gga$}
+            node at (1.5,-0.5) 	{$\aaa$};            
+            \path        
+            node at (0,-1) 		{$\textcolor{blue}{6}$}
+            node at (0.3,-1) 	{$\textcolor{blue}{5}$}
+            node at (0.6,-1) 	{$\textcolor{blue}{4}$}
+            node at (0.9,-1) 	{$\textcolor{red}{4}$}
+            node at (1.2,-1) 	{$\textcolor{red}{3}$}
+            node at (1.5,-1) 	{$\textcolor{red}{2}$};  
+		\end{tikzpicture} 
+	\end{center}
+    
+    \textbf{Edição}: Não foi encontrado nenhuma ocorrência com pelo menos 2 diferença(s).
+    
+\end{frame}
+
+\plain{Questões?}
+
+\begin{frame}[fragile]
+	\frametitle{Referências}
+    \begin{thebibliography}{9}
+    	\bibitem{1} Dobre, J. A. (2017). O Problema da Seleção de Segmentos Específicos: algoritmos e aplicações.
+        
+       	\bibitem{2} Alberts, B., Johnson, A., Lewis, J., Raff, M., Roberts, K., and Walter, P. (2009). Biologia
+		\bibitem{3} do Nascimento, F. M. S. (2008). Aplicação da técnica pcr para detecção de bactérias
+potencialmente patogênicas em um sistema uasb-lagoas de polimento para tratamento
+de esgoto doméstico.
+		\bibitem{4} Gusfield, D. (1997). Algorithms on Strings, Trees, and Sequences: Computer Science and
+Computational Biology. EBL-Schweitzer. Cambridge University Press.
+    \end{thebibliography}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Referências}
+    \begin{thebibliography}{9}
+		\bibitem{5} Landau, G. M. and Vishkin, U. (1989). Fast parallel and serial approximate string matching.
+Journal of algorithms, 10(2):157–169.
+		\bibitem{6} Maaß, M. G. et al. (2003). A fast algorithm for the inexact characteristic string problem.
+Technical report, Technical Report TUM-I0312, Fakultät für Informatik, TU München.
+		\bibitem{7} Ribeiro, M. C. M. (2009). Genética Molelcular.
+    \end{thebibliography}
+\end{frame}
+
+\end{document}
