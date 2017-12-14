@@ -7,8 +7,10 @@
 
 # Algoritmo
 
-Entrada: Matriz A e B com dimensões N por N, com N >= 2
-Saída: Matriz A*B multiplicada em cada nó, e também escrita em um arquivo "saida.txt"
+* Entrada: Matriz A e B com dimensões N por N, com N >= 2
+* Saída: Matriz A*B multiplicada em cada nó, e também escrita em um arquivo "saida.txt"
+
+# Passos
 
 * Passo 0
 	Envie os dados da matriz B para os p processadores
