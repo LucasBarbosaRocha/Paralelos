@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h> /* For strlen */
 #include <mpi.h> /* For MPI functions, etc */
+#include <time.h>
 const int MAX_TAM = 8;
 
 /*
@@ -8,42 +9,25 @@ const int MAX_TAM = 8;
 * Aluno2: Lucas Barbosa Rocha   | 2014.1907.013-4
 * Algoritmos Paralelos - Henrique Mongelli
 * Algoritmo: Multiplicação de matriz - FOX
+* Entrada: Duas matrizes A e B com dimensão N*N, com N >= 2
+* Saida: Uma matriz C no arquivo saida.txt
 */
 
 int main(void) {
 	int comm_sz; /* Number of processes */
 	int my_rank; /* My process rank */
 	int i, j;
-	int linha, destino, n = 0, stage = 0, value, lixo;
+	int linha, destino, n = 0, stage = 0, value, lixo, cont;
 	float A[MAX_TAM][MAX_TAM], B[MAX_TAM][MAX_TAM], VB, VA, VC = 0, aux;
-
-	/*Inicializando valores */
-	//n = 2;
-	//cont = 1;
-	/*for(i = 0; i < n; i++){
-		for(j = 0; j < n; j++){
-			A[i][j] = 1;
-			if (i == j && j == 0)
-				A[i][j] = 3.0;
-			if (i == j && j == 1)
-				A[i][j] = 4.0; 	
-			if (i == j && j == 2)
-				A[i][j] = 5.0;				
-		}
-	}
-	cont = 1;
-	for(i = 0; i < n; i++){
-		for(j = 0; j < n; j++){
-			B[i][j] = 1;	
-			C[i][j] = 0.0;
-		}
-		cont++;
-	}*/
-	/*Fim*/
+	FILE *arq;
 
 	MPI_Init(NULL, NULL);
 	MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+	clock_t tempo;
+	tempo = clock();
+
 
 	/* Passo 0 - Enviar cada elemento da matriz B para n processadores */
 	if (my_rank == 0)
@@ -71,8 +55,8 @@ int main(void) {
 		j++;
 		for (i = 1; i < comm_sz; i++)
 		{
-			MPI_Send(&n, 4, MPI_INT, i, 0, MPI_COMM_WORLD);
-			MPI_Send(&B[linha][j], 4, MPI_FLOAT, i, 0, MPI_COMM_WORLD);
+			MPI_Send(&n, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+			MPI_Send(&B[linha][j], 1, MPI_FLOAT, i, 0, MPI_COMM_WORLD);
 			if (j == n-1)
 			{
 				linha++;
@@ -83,8 +67,8 @@ int main(void) {
 		}
 	}else
 	{
-		MPI_Recv(&n, 4, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);		
-		MPI_Recv(&VB, 4, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv(&n, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);		
+		MPI_Recv(&VB, 1, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	}
 	/* Passo 0 - Fim */
 
@@ -101,7 +85,7 @@ int main(void) {
 			j++;
 			for (i = 1; i < comm_sz; i++)
 			{
-				MPI_Send(&A[linha][destino], 4, MPI_FLOAT, i, 0, MPI_COMM_WORLD);
+				MPI_Send(&A[linha][destino], 1, MPI_FLOAT, i, 0, MPI_COMM_WORLD);
 				if (j == n-1)
 				{
 					linha++;
@@ -113,7 +97,7 @@ int main(void) {
 			}
 		}else
 		{
-			MPI_Recv(&VA, 4, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Recv(&VA, 1, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 		/* Fim passo 1*/
 
@@ -122,40 +106,21 @@ int main(void) {
 		VC += VA * VB; 
 		/* Fim passo 2 */
 
-
-		/*if (my_rank == 0)
-		{
-
-			C[0][0] = C[0][0] + VC;
-			//printf("stage %d my_rank %d A %.2f B %.2f linha %d coluna %d C %.2f\n", stage, my_rank, VA, VB, i/n, i%n, C[0][0]);
-			for (i = 1; i < comm_sz; i++)
-			{
-				MPI_Recv(&VC, 4, MPI_FLOAT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				C[i/n][i%n] = C[i/n][i%n] + VC;		
-				//printf("stage %d my_rank %d A %.2f B %.2f linha %d coluna %d C %.2f VC %.2f\n", stage, my_rank, VA, VB, i/n, i%n, C[i/n][i%n], VC);
-			}
-
-		} else {
-			MPI_Send(&VC, 4, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
-		}*/
-		//printf("stage %d my_rank %d A %.2f B %.2f \n", stage, my_rank, VA, VB);
-
-
 		/* Passo 3 - Reorganizar a matriz B */
         if(my_rank >= 0 && my_rank < n) /* Estou na borda e preciso mandar para ultima borda*/
         {
 			value = (n*n)+my_rank;	/* Envio para o (fim + my_rank) Ex. (3*3) + 1 = 10, 10-3 envia para 7*/
-			MPI_Send(&VB, 4, MPI_FLOAT, value-n, 0, MPI_COMM_WORLD);
-			MPI_Recv(&VB, 4, MPI_FLOAT, my_rank+n, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Send(&VB, 1, MPI_FLOAT, value-n, 0, MPI_COMM_WORLD);
+			MPI_Recv(&VB, 1, MPI_FLOAT, my_rank+n, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }else if(my_rank >= ((n-1)*n) && my_rank < (n*n)) /* Estou na ultima borda e preciso receber da primeira */
         {
-			MPI_Send(&VB, 4, MPI_FLOAT, my_rank-n, 0, MPI_COMM_WORLD);
-			MPI_Recv(&VB, 4, MPI_FLOAT, my_rank%n, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Send(&VB, 1, MPI_FLOAT, my_rank-n, 0, MPI_COMM_WORLD);
+			MPI_Recv(&VB, 1, MPI_FLOAT, my_rank%n, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
         else
         {
-			MPI_Send(&VB, 4, MPI_FLOAT, my_rank-n, 0, MPI_COMM_WORLD);
-			MPI_Recv(&VB, 4, MPI_FLOAT, my_rank+n, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Send(&VB, 1, MPI_FLOAT, my_rank-n, 0, MPI_COMM_WORLD);
+			MPI_Recv(&VB, 1, MPI_FLOAT, my_rank+n, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 		/* Fim passo 3 */
 	}
@@ -163,8 +128,35 @@ int main(void) {
 	printf("C[%d][%d] = %.2f\n", my_rank/n, my_rank%n, VC);
 
 
-
+	/*  Passo 4 - Cada processo envia seus dados para o processo 0. 
+		O processo 0 escreve a matriz C em um arquivo de texto: saida.txt */
+	if (my_rank == 0)
+	{
+		arq = fopen("saida.txt", "w");
+		fprintf(arq, "%.2f", VC);
+		cont = 1;		
+		for (i = 1; i < comm_sz; i++)
+		{
+			MPI_Recv(&aux, 1, MPI_FLOAT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			if (cont == 0)
+				fprintf(arq, "%.2f", aux);
+			else
+				fprintf(arq, "%*.2f", 10, aux);
+			if (cont == n-1)
+			{
+				fprintf(arq, "\n");	
+				cont = 0;			
+			}else {
+				cont++;
+			}
+		}
+		fclose(arq);
+	} else {
+		MPI_Send(&VC, 1, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);		
+	}
 	
+    printf("my_rank %d Tempo:%f\n\n", my_rank,(clock() - tempo) / (double)CLOCKS_PER_SEC);
+
 	MPI_Finalize();
 	return 0;
 } /* main */
