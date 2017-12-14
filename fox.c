@@ -14,8 +14,8 @@ int main(void) {
 	int comm_sz; /* Number of processes */
 	int my_rank; /* My process rank */
 	int i, j;
-	int linha, destino, n = 0, stage = 0, value, cont, lixo;
-	float A[MAX_TAM][MAX_TAM], B[MAX_TAM][MAX_TAM], C[MAX_TAM][MAX_TAM], VB, VA, VC, aux;
+	int linha, destino, n = 0, stage = 0, value, lixo;
+	float A[MAX_TAM][MAX_TAM], B[MAX_TAM][MAX_TAM], VB, VA, VC = 0, aux;
 
 	/*Inicializando valores */
 	//n = 2;
