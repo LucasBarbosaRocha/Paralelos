@@ -99,7 +99,6 @@ my_rank 3 Tempo:5.452379
 
 * 3x3 - 9 processadores
 
-
 Matriz A
 
 ```
@@ -170,6 +169,52 @@ my_rank 8 Tempo:5.237102
 
 * 4x4
 
+Matriz A
 
+```
+1.0 2.0 3.0 4.0
+5.0 5.0 5.0 5.0
+6.0 6.0 6.0 6.0
+4.0 3.0 2.0 1.0
+```
 
+Matriz B
 
+```
+2.0 2.0 2.0 2.0
+3.0 3.0 3.0 3.0
+4.0 4.0 5.0 5.0
+6.0 7.0 8.0 9.0
+```
+
+Matriz C (resultado do programa)
+
+```
+44.00  48.00   55.00   59.00
+75.00  80.00   90.00   95.00
+90.00  96.00  108.00  114.00
+31.00  32.00   35.00   36.00
+```
+
+Tempo em milisegundos
+
+Teste 1
+
+```
+my_rank 0  Tempo:0.031214
+my_rank 1  Tempo:4.600627
+my_rank 2  Tempo:4.781238
+my_rank 3  Tempo:4.580649
+my_rank 4  Tempo:4.668628
+my_rank 5  Tempo:4.622650
+my_rank 6  Tempo:4.715682
+my_rank 7  Tempo:4.665507
+my_rank 8  Tempo:4.583284
+my_rank 9  Tempo:4.547082
+my_rank 10 Tempo:4.638633
+my_rank 11 Tempo:4.794506
+my_rank 14 Tempo:4.704510
+my_rank 12 Tempo:4.493100
+my_rank 13 Tempo:4.866820
+my_rank 15 Tempo:4.681606
+```
