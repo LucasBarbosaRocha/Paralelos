@@ -13,11 +13,11 @@ Saída: Matriz A*B multiplicada em cada nó
 * Passo 0
 	Envie os dados da matriz B para os p processadores
 * Para stage = 0 até N Faça:
-** Passo 1
+* Passo 1
 	Envie o elemento (stage+linha)%N para os p processadores de cada linha
-** Passo 2
+* Passo 2
 	Realize a soma das multiplicações das matrizes nos p processadores
-** Passo 3
+* Passo 3
 	Cada p processador manda os seus dados da matriz B para o processador para o processador acima.
 
 # Complexidade
