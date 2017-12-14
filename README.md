@@ -66,12 +66,35 @@ Matriz C (resultado do programa)
 
 Tempo em milisegundos
 
+Teste 1
+
 ```
 my_rank 0 Tempo:0.000309
-my_rank 1 Tempo:416.668263
-my_rank 2 Tempo:416.669016
-my_rank 3 Tempo:416.630237
+my_rank 1 Tempo:4.668263
+my_rank 2 Tempo:4.669016
+my_rank 3 Tempo:4.630237
 ```
+
+Teste 2
+
+```
+my_rank 0 Tempo:0.000337
+my_rank 1 Tempo:3.014637
+my_rank 2 Tempo:3.014686
+my_rank 3 Tempo:3.013326
+
+```
+
+Teste 3
+
+```
+my_rank 0 Tempo:0.000312
+my_rank 1 Tempo:5.436815
+my_rank 2 Tempo:5.454038
+my_rank 3 Tempo:5.452379
+
+```
+
 * 3x3 - 9 processadores
 
 
@@ -101,16 +124,46 @@ Matriz C (resultado do programa)
 
 Tempo em milisegundos
 
+Teste 1
+
 ```
-my_rank 0 Tempo:0.018751
-my_rank 1 Tempo:18.447161
-my_rank 2 Tempo:18.833272
-my_rank 3 Tempo:18.227007
-my_rank 4 Tempo:18.831843
-my_rank 5 Tempo:18.446612
-my_rank 6 Tempo:18.222836
-my_rank 7 Tempo:18.497605
-my_rank 8 Tempo:18.492951
+my_rank 0 Tempo:0.015265
+my_rank 1 Tempo:4.119996
+my_rank 2 Tempo:4.081252
+my_rank 3 Tempo:4.088579
+my_rank 4 Tempo:4.000684
+my_rank 5 Tempo:4.126090
+my_rank 6 Tempo:4.071070
+my_rank 7 Tempo:4.001786
+my_rank 8 Tempo:3.987092
+```
+
+Teste 2
+
+```
+my_rank 0 Tempo:0.017556
+my_rank 1 Tempo:6.116106
+my_rank 2 Tempo:6.232290
+my_rank 3 Tempo:6.175569
+my_rank 4 Tempo:6.116046
+my_rank 5 Tempo:6.192252
+my_rank 6 Tempo:6.186414
+my_rank 7 Tempo:6.170671
+my_rank 8 Tempo:6.160474
+```
+
+Teste 3
+
+```
+my_rank 0 Tempo:0.037726
+my_rank 1 Tempo:5.357163
+my_rank 2 Tempo:5.234567
+my_rank 3 Tempo:5.284559
+my_rank 4 Tempo:5.346505
+my_rank 5 Tempo:5.483498
+my_rank 6 Tempo:5.357879
+my_rank 7 Tempo:5.428872
+my_rank 8 Tempo:5.237102
 ```
 
 * 4x4
