@@ -45,52 +45,63 @@ Saída: Matriz A*B multiplicada em cada nó, e também escrita em um arquivo "sa
 
 Matriz A
 
+```
 1.0 2.0
 3.0 4.0
+```
 
 Matriz B
 
+```
 4.0 3.0
 2.0 1.0
+```
 
 Matriz C (resultado do programa)
 
+```
 8.00   5.00
 20.00  13.00
+```
 
 Tempo em milisegundos
 
+```
 my_rank 0 Tempo:0.000309
 my_rank 1 Tempo:416.668263
 my_rank 2 Tempo:416.669016
 my_rank 3 Tempo:416.630237
-
+```
 * 3x3 - 9 processadores
 
 
 Matriz A
 
+```
 1.0 2.0 3.0
 4.0 5.0 6.0
 7.0 8.0 9.0
+```
 
 Matriz B
 
+```
 2.0 2.0 2.0
 3.0 3.0 3.0
 1.0 3.0 2.0
-
+```
 
 Matriz C (resultado do programa)
 
+```
 11.00 17.00 14.00
 29.00 41.00 35.00
 47.00 65.00 56.00
-
-
+```
 
 Tempo em milisegundos
 
+```
 my_rank 0 Tempo:0.018751
 my_rank 1 Tempo:18.447161
 my_rank 2 Tempo:18.833272
@@ -100,6 +111,7 @@ my_rank 5 Tempo:18.446612
 my_rank 6 Tempo:18.222836
 my_rank 7 Tempo:18.497605
 my_rank 8 Tempo:18.492951
+```
 
 * 4x4
 

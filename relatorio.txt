@@ -7,10 +7,12 @@ Algoritmo: Multiplicação de matriz - FOX
 
 Obs: Problemas aconteceram ao tentar ler de um arquivo de texto, a entrada será feita pelo scanf da linguagem C.
 
+
 Algoritmo
 
 Entrada: Matriz A e B com dimensões N por N, com N >= 2
 Saída: Matriz A*B multiplicada em cada nó, e também escrita em um arquivo "saida.txt"
+Website https://matrixcalc.org faz a multiplicação de duas matrizes e foi utilizado para conferir o resultado final (Matriz C)
 
 Passo 0
 	Envie os dados da matriz B para os p processadores
@@ -81,7 +83,6 @@ Matriz B
 3.0 3.0 3.0
 1.0 3.0 2.0
 
-
 Matriz C (resultado do programa)
 
 11.00 17.00 14.00
@@ -100,5 +101,4 @@ my_rank 6 Tempo:18.222836
 my_rank 7 Tempo:18.497605
 my_rank 8 Tempo:18.492951
 
-
-
+* 4x4 - 16 processadores 
