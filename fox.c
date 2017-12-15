@@ -25,8 +25,8 @@ int main(void) {
 	MPI_Comm_size(MPI_COMM_WORLD, &comm_sz);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 
-	clock_t tempo;
-	tempo = clock();
+	/*clock_t tempo;
+	tempo = clock();*/
 
 
 	/* Passo 0 - Enviar cada elemento da matriz B para n processadores */
@@ -155,7 +155,7 @@ int main(void) {
 		MPI_Send(&VC, 1, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);		
 	}
 	
-    printf("my_rank %d Tempo:%f\n\n", my_rank,(clock() - tempo) / (double)CLOCKS_PER_SEC);
+    /*printf("my_rank %d Tempo:%f\n\n", my_rank,(clock() - tempo) / (double)CLOCKS_PER_SEC);*/
 
 	MPI_Finalize();
 	return 0;
