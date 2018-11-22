@@ -39,6 +39,7 @@
 * Matriz B - N*N espaço
 * Matriz C - sqrt(p)*sqrt(p) Espaço para processamento CGM, mas nesse programa funciona para um elemento, então a matriz C tem o tamanho de um float
 
+
 # Resultados
 
 * Tempo
